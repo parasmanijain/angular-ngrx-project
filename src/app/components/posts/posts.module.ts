@@ -10,6 +10,7 @@ import { PostsListComponent } from './posts-list/posts-list.component';
 import { PostsEffects } from './state/posts.effects';
 import { postsReducer } from './state/posts.reducer';
 import { POST_STATE_NAME } from './state/posts.selector';
+import { SinglePostComponent } from './single-post/single-post.component';
 
 const routes:Routes = [{
     path: '',
@@ -35,7 +36,8 @@ const routes:Routes = [{
     declarations: [
         PostsListComponent,
         AddPostComponent,
-        EditPostComponent]
+        EditPostComponent,
+        SinglePostComponent]
 })
 export class PostsModule {
 

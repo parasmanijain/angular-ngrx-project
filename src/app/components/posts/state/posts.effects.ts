@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { map, mergeMap, switchMap } from "rxjs/operators";
+import { Update } from "@ngrx/entity";
+import { RouterNavigatedAction, ROUTER_NAVIGATION } from "@ngrx/router-store";
+import { filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { Post } from "src/app/models/posts.model";
 import { PostsService } from "src/app/services/posts.service";
 import { addPost, addPostSuccess, deletePost, deletePostSuccess, loadPosts, loadPostsSuccess, updatePost, updatePostSuccess } from "./posts.actions";
 
@@ -42,7 +45,13 @@ export class PostsEffects {
             switchMap((action)=> {
                 return this.postsService.updatePost(action.post).pipe(
                     map((data) => {
-                        return updatePostSuccess({ post:action.post });
+                        const updatedPost:Update<Post> = {
+                            id:action.post.id,
+                            changes: {
+                                ...action.post
+                            }
+                        }
+                        return updatePostSuccess({ post:updatedPost });
                     })
                 )
             })
@@ -61,4 +70,24 @@ export class PostsEffects {
             })
         )
     });
+
+    getSinglePost$ = createEffect(()=> {
+        return this.actions$.pipe(ofType(ROUTER_NAVIGATION),
+        filter((r: RouterNavigatedAction) => {
+            return r.payload.routerState.url.startsWith('/posts/details')
+        }),
+        map((r:RouterNavigatedAction)=> {
+            return r.payload.routerState['params']['id']
+        }),
+        switchMap((id)=> {
+            return this.postsService.getPostById(id).pipe(map((post)=> {
+                const postData = [{
+                    ...post,
+                    id
+                }];
+                return loadPostsSuccess({posts:postData})
+            }));
+        })
+        )
+    })
 }

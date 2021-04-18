@@ -46,4 +46,10 @@ export class PostsService {
             `https://sampleproject-47dd5-default-rtdb.firebaseio.com/posts/${id}.json`  
         )
     }
+
+    getPostById(id:string):Observable<Post> {
+        return this.http.get<Post>(
+            `https://sampleproject-47dd5-default-rtdb.firebaseio.com/posts/${id}.json`  
+        )
+    }
 }
