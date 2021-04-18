@@ -18,4 +18,9 @@ export const getPostById = createSelector(
     getCurrentRoute,
     (posts, route:RouterStateUrl) => {
         return posts? posts[route.params['id']] : null
-    });
+});
+
+export const getCount = createSelector(
+    getPostsState,
+    (state)=> state.count
+)
